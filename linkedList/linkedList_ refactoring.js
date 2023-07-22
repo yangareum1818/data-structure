@@ -89,6 +89,7 @@ class Node {
 }
 
 const ll = new LinkedList();
+console.log("linkedList START");
 ll.length;
 ll.add(1); // 1
 ll.add(2); // 2
@@ -105,3 +106,4 @@ console.log(ll.search(4)); // 6
 ll.remove(4); // undefined
 console.log(ll.search(4)); // undefined
 console.log(ll.remove(4)); // undefined
+console.log("linkedList END");

@@ -10,3 +10,7 @@
 ## 연결리스트
 
 ![연결리스트](/images/linkedlist.png)
+
+## 스택과 큐
+
+![스택과 큐](/images/stack_queue.png)
