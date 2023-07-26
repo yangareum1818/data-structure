@@ -2,7 +2,9 @@
  * 이진탐색트리 조건 : 자신보다 작은 수가 왼쪽, 자신보다 큰 수가 오른쪽.
  * 만들어진 트리의 전체트리와 어느 한 구분트리가 똑같은 알고리즘을 적용하고 있을 때, 재귀함수를 사용한다.
  *
- * 숙제 : 값은 값을 넣은 경우 에러처리 (alert, throw)
+ * 숙제
+ * 1. insert() : 이미 넣은값을 넣은 경우 에러처리 (alert, throw)
+ * 2. length 구하기 (return length) : 트리에 몇개가 들어가 있는지 갯수 구하기.
  */
 class BinarySearchTree {
   root = null;
@@ -115,8 +117,91 @@ class BinarySearchTree {
     return this.#search(this.root, value);
   }
 
+  /**
+   * 1. leaf일 경우(자식이 없는경우), 부모 node에게 자신을 제거해달라한다.
+   * 2. 자식이 1개일 경우, 자신의 부모에게 자신을 제거하고 자식이 그 자리로 오도록 끌어올린다. (대체)
+   * 3. 자식이 2개일 경우, 만약 root를 제거한다면?
+   *   3-1. 자신의 왼쪽 Node중에 제일 큰 숫자가 root자리에 오게된다. ( 왼쪽 Node 중 가장 오른쪽 )
+   *   3-2. 그 후, root자리로 온 숫자의 자리로 원래 root였던 수가 들어간다.
+   *   3-3. 그리고 그 숫자가 제거된다.
+   *
+   * 지우려는 값을 찾았을 경우는 결국, 부모가 값을 찾지 못해 자식에게 넘겨준 것이다.
+   * 그래서 값을 찾았을 경우는 자식입장이 되는 것, 찾지 못한 경우는 부모입장이다.
+   * 부모입장에서 값을 찾지 못한 상황이기 때문에 그 값을 찾아보라고 자식에게 물어본다. (재귀사용)
+   * 그러므로, if 와 else문에서 코드는 아예 다른함수이다. (부모 <=> 자식)
+   */
+  // 삭제 재귀함수 (return한 값이 호출한 함수로 돌아가는 것을 파악해라.)
+  #remove(node, value) {
+    // 찾으려는 숫자가 존재하지 않는 경우.
+    if (!node) {
+      return null;
+    }
+    // [ 자식입장 ]
+    // 지울 값을 찾았을 경우, 삭제한다.
+    if (node.value === value) {
+      // leaf일 경우 ( 자식이 없을 경우 )
+      if (!node.left && !node.right) {
+        // null을 return (제거한다.)
+        return null;
+      } else if (!node.left) {
+        // 왼쪽 Node가 없을 경우, (오른쪽 Node가 있을 경우)는 위에서 처리되서 넘어온거라 생략 가능.
+        // 오른쪽 Node를 return한다. (어디로? 부모입장에 재귀함수로 다시 들어간다. 언제까지? 삭제하려는 값을 찾을 때 까지)
+        return node.right;
+      } else if (!node.right) {
+        // 오른쪽 Node가 없을 경우, (왼쪽 Node가 있을 경우)는 위에서 처리되어 넘어와서 생략 가능.
+        // 왼쪽 Node를 return한다. (어디로? 부모입장에 재귀함수로 다시 들어간다. 언제까지? 삭제하려는 값을 찾을 때 까지)
+        return node.left;
+      } else {
+        /**
+         * Node가 2개 모두 있을 경우, 왼쪽 Node에서 오른쪽 Node 중 가장 큰 수를 찾고 서로 자리를 바꾼다. 그 뒤 leaf는 삭제한다.
+         * 1. 왼쪽에서 가장 큰 수를 찾기 위해 변수를 만든다.
+         * 2. 최대한 오른쪽에 있는 Node를 찾아가야한다. (node.left.right.right.right.right) : 이럴때, 어디까지 가야하는지 모르니까 while문을 사용한다.
+         */
+        // 왼쪽 Node
+        let exchange = node.left;
+        // while문을 돌기 시작하면 exchange는 가장 오른쪽에서 큰 수를 찾는다.
+        while (exchange.right) {
+          // 오른쪽이 없을 때까지 계속 오른쪽으로 가야한다. (한글과 반대로 조건을 걸어주면 된다. 오른쪽이 있을 때 까지.)
+          exchange = exchange.right;
+        }
+        // 상위 node와 가장 큰 수를 바꿔준다. (node.value와 exchange.value)
+        const temp = node.value; // 바뀔 값을 넣어준 뒤,
+        node.value = exchange.value; // 바꿀 값(가장 큰 수)와 바꾼다.
+        exchange.value = temp;
+
+        // 바꿨으면, 제거한다. (3-3.) (재귀를 돌면서 제거된다.)
+        node.left = this.#remove(node.left, temp);
+        // 재귀 때문에 node를 return해준다.
+        return node;
+      }
+    } else {
+      // [ 부모입장 ]
+      // 지울 값을 찾지 못했을 경우, 다시 좌우 Node에게 물어본다.
+      if (node.value > value) {
+        // 부모값이 삭제하려는 값보다 작을 때, 다시 왼쪽 자식에게 물어본다.
+        // 왼쪽 Node의 값을 대입해주고 왼쪽 Node에 재귀함수 호출 (그럼 값을 찾았을 경우 return 값이 node.left에 대입된다.)
+        node.left = this.#remove(node.left, value);
+        // 재귀 때문에 node를 return해준다.
+        return node;
+      } else {
+        // 부모값이 삭제하려는 값보다 클 때, 다시 오른쪽 자식에게 물어본다.
+        // 오른쪽 Node의 값을 대입해주고 오른쪽 Node에 재귀함수 호출 ( 그럼 값을 찾았을 경우 return 값이 node.right에 대입된다. )
+        node.right = this.#remove(node.right, value);
+        // 재귀 때문에 node를 return해준다.
+        return node;
+      }
+    }
+  }
   remove(value) {
     // 삭제(제거)
+    this.root = this.#remove(this.root, value);
+    /**
+     * 이 재귀함수는 node를 return받을 수 있기 때문에 node를 return받을 경우(node가 있을 경우)를 조건걸어주려 했지만, node를 return 받지 않는 경우 (leaf일 경우와 지울 값이 존재하지 않을 경우)에서 node는 null이 되서 삭제하는 경우에는 삭제가 되지 않아 재귀함수는 현재 root로 대입해준다.
+     * // const node = this.#remove(this.root, value);
+     * // if (node) {
+     * //   this.root = node;
+     * // }
+     */
   }
 }
 
@@ -137,5 +222,17 @@ bst.insert(19);
 bst.insert(23);
 bst.insert(7);
 bst.insert(11);
+bst.insert(8);
 bst.insert(2);
 bst.insert(16);
+console.log(bst.search(16));
+console.log(bst.search(18)); // null
+bst.remove(8);
+console.log(bst.remove(17)); // null
+bst.remove(4);
+bst;
+
+const bst2 = new BinarySearchTree();
+bst2.insert(100);
+bst2.remove(100);
+bst.root; // null?
