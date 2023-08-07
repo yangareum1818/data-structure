@@ -6,7 +6,7 @@
  * : enqueue-push를 tail을 만들어야한다.
  * : dequeue-shift는 removeFirst을 만들어야한다.
  */
-class Queue {
+export class Queue {
   arr = [];
 
   enqueue(value) {
@@ -30,14 +30,14 @@ class Queue {
 }
 
 const queue = new Queue();
-console.log("Queue START");
-queue.enqueue(1); // [1]
-queue.enqueue(3); // [1, 3]
-queue.enqueue(5); // [1, 3, 5]
-queue.enqueue(2); // [1, 3, 5, 2]
-queue.enqueue(4); // [1, 3, 5, 2, 4]
-console.log(queue.length); // 5
-queue.dequeue(); // [3, 5, 2, 4]
-console.log(queue.peek()); // 3
+// console.log("Queue START");
+// queue.enqueue(1); // [1]
+// queue.enqueue(3); // [1, 3]
+// queue.enqueue(5); // [1, 3, 5]
+// queue.enqueue(2); // [1, 3, 5, 2]
+// queue.enqueue(4); // [1, 3, 5, 2, 4]
+// console.log(queue.length); // 5
+// queue.dequeue(); // [3, 5, 2, 4]
+// console.log(queue.peek()); // 3
 
-console.log("Queue END");
+// console.log("Queue END");

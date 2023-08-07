@@ -7,7 +7,7 @@
  * arr배열을 사용하지 않고, 연결리스트로도 구현해도된다.
  * pop, top을 빠르게 하고 싶다면? 배열의 맨 끝부분인 tail을 사용하자. (연결리스트 tail)
  */
-class Stack {
+export class Stack {
   arr = [];
 
   push(value) {
@@ -30,14 +30,14 @@ class Stack {
 }
 
 const stack = new Stack();
-console.log("Stack START");
-stack.push(1); // [1]
-stack.push(3); // [1, 3]
-stack.push(5); // [1, 3, 5]
-stack.push(2); // [1, 3, 5, 2]
-stack.push(4); // [1, 3, 5, 2, 4]
-console.log(stack.length); // 5
-stack.pop(); // [1, 3, 5, 2]
-console.log(stack.top()); // 2
+// console.log("Stack START");
+// stack.push(1); // [1]
+// stack.push(3); // [1, 3]
+// stack.push(5); // [1, 3, 5]
+// stack.push(2); // [1, 3, 5, 2]
+// stack.push(4); // [1, 3, 5, 2, 4]
+// console.log(stack.length); // 5
+// stack.pop(); // [1, 3, 5, 2]
+// console.log(stack.top()); // 2
 
-console.log("Stack END");
+// console.log("Stack END");
